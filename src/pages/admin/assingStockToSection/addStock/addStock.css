@@ -1,0 +1,17 @@
+.pop{
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    inset: 0;
+    background: #0000007a;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+}
+.pop .pop-body{
+    background: white;
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
+  
+}

@@ -1,0 +1,7 @@
+.product-card-admin {
+    cursor: pointer;
+}
+
+.product-card-admin:hover {
+   transform: scale(1.01);
+}
