@@ -11,9 +11,9 @@ import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 const AddSupplier = () => {
     const [formData, setFormData] = useState({
         supplierName: '',
-        supplierAddress: '',
-        email: '',
-        gst: '',
+        supplierAddress: '---',
+        email: '---',
+        gst: '---',
         contactDetails: '',
         items: [
             {
@@ -102,38 +102,35 @@ const AddSupplier = () => {
                     </div>
 
                     <div className="col-md-6 supplier_item">
-                        <label>Supplier Address *</label>
+                        <label>Supplier Address</label>
                         <Input
                             type="text"
                             name="supplierAddress"
                             value={formData.supplierAddress}
                             onChange={(e) => handleChange(e)}
                             placeholder="Enter supplier address"
-                            required
                         />
                     </div>
 
                     <div className="col-md-6 supplier_item">
-                        <label>Email *</label>
+                        <label>Email</label>
                         <Input
-                            type="email"
+                            type="text"
                             name="email"
                             value={formData.email}
                             onChange={(e) => handleChange(e)}
                             placeholder="Enter email"
-                            required
                         />
                     </div>
 
                     <div className="col-md-6 supplier_item">
-                        <label>GST *</label>
+                        <label>GST</label>
                         <Input
                             type="text"
                             name="gst"
                             value={formData.gst}
                             onChange={(e) => handleChange(e)}
                             placeholder="Enter GST number"
-                            required
                         />
                     </div>
 
