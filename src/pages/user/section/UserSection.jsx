@@ -102,8 +102,8 @@ const UserSection = () => {
       <div className="row section_container">
         <div className="d-flex justify-content-between">
           <div className="col-md-6 section_item">
-            <label>Section </label>
-            <span className="fw-bold"> {sectionData.sectionName}</span>
+            <label>Section</label>
+            <span className="fw-bold" style={{fontSize: '20px', color: 'red'}}> {sectionData.sectionName}</span>
           </div>
         </div>
         <UserDistributionView sectionId={sectionId} />

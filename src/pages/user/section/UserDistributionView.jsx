@@ -21,10 +21,10 @@ const UserDistributionView = ({ sectionId }) => {
       if (!response.ok) throw new Error("Failed to fetch data");
       const result = await response.json();
 
-      if (result && result.stocks && result.stocks.length >= 0) {
+      if (result && result.stocks && result.stocks.length > 0) {
         setRecords(result.stocks);
       } else {
-        throw new Error("No data found for this date");
+        setRecords([]); // Ensure empty records if no data is found
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -41,10 +41,10 @@ const UserDistributionView = ({ sectionId }) => {
       if (!response.ok) throw new Error("Failed to fetch data");
       const result = await response.json();
 
-      if (result && result.stocks && result.stocks.length >= 0) {
+      if (result && result.stocks && result.stocks.length > 0) {
         setAccepted(result.stocks);
       } else {
-        throw new Error("No data found for this date");
+        setAccepted([]); // Ensure empty accepted list if no data
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -55,11 +55,11 @@ const UserDistributionView = ({ sectionId }) => {
 
   useEffect(() => {
     getStocksGroupByDate();
-  }, []);
+  }, [sectionId]);
 
   useEffect(() => {
     fetchAccepted();
-  }, []);
+  }, [sectionId]);
 
   const handleAcceptReject = async (row, status) => {
     if (!row) return;
@@ -75,7 +75,7 @@ const UserDistributionView = ({ sectionId }) => {
         body: JSON.stringify(row),
       });
       if (!response.ok) throw new Error(`Failed to ${status}`);
-      toast.success(` Section ${status} successfully`);
+      toast.success(`Section ${status} successfully`);
       getStocksGroupByDate();
       fetchAccepted();
     } catch (error) {
@@ -105,10 +105,11 @@ const UserDistributionView = ({ sectionId }) => {
       cell: (row) => (
         <div className="d-flex gap-4 justify-content-center">
           <button
-             onClick={() =>
+            onClick={() =>
               navigate("return-stock", {
                 state: { sectionId, date: row?.date, stocks: row?.stocks },
-              })}
+              })
+            }
             className="readBtn Btn bg-danger text-white"
           >
             Return Stocks
@@ -165,88 +166,77 @@ const UserDistributionView = ({ sectionId }) => {
             }
             className="readBtn Btn"
           >
-            <FaEye />
+            <FaEye /> See
           </button>
-          <span
-            style={{
-              color: "green",
-              fontWeight: '600',
-              fontSize: '14px',
-            }}
-          >
-            Accepted
-          </span>
         </div>
       ),
-    }
-    
+    },
   ];
+
   return (
     <>
-      <h4 className="mt-5">New Assign Stocks</h4>
-      {loading ? (
-        <div className="loading-spinner">
-          <ClipLoader size={30} color="#00BFFF" loading={loading} />
-        </div>
-      ) : (
-        <div className="table_main">
-          {records.length <= 0 ? (
-            <>
-              <div className="text-center">No any stock assign</div>
-            </>
+      {records.length > 0 && (
+        <>
+          <h4 className="mt-4">New Assign Stocks</h4>
+          {loading ? (
+            <div className="loading-spinner">
+              <ClipLoader size={30} color="#00BFFF" loading={loading} />
+            </div>
           ) : (
-            <table className="item-table">
-              <thead>
-                <tr>
-                  <th>Stocks</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records?.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item?.stocks?.length}</td>
-                    <td>
-                      {new Date(item?.date).toLocaleDateString()}{" "}
-                      {new Date(item?.date).toLocaleTimeString()}
-                    </td>
-                    <td>{item?.status}</td>
-                    <td className="text-center">
-                      <div className="d-flex gap-4 justify-content-center">
-                        <button
-                          onClick={() =>
-                            navigate("distribution/stock", {
-                              state: { data: item, sectionId },
-                            })
-                          }
-                          className="readBtn Btn"
-                        >
-                          <FaEye /> See
-                        </button>
-                        <button
-                          onClick={() => handleAcceptReject(item, "accepted")}
-                          className="editBtn Btn"
-                        >
-                          <MdCheck /> Accept
-                        </button>
-                        <button
-                          onClick={() => handleAcceptReject(item, "rejected")}
-                          className="deleteBtn Btn"
-                        >
-                          <MdClose /> Reject
-                        </button>
-                      </div>
-                    </td>
+            <div className="table_main">
+              <table className="item-table">
+                <thead>
+                  <tr>
+                    <th>Stocks</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {records?.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item?.stocks?.length}</td>
+                      <td>
+                        {new Date(item?.date).toLocaleDateString()}{" "}
+                        {new Date(item?.date).toLocaleTimeString()}
+                      </td>
+                      <td>{item?.status}</td>
+                      <td className="text-center">
+                        <div className="d-flex gap-4 justify-content-center">
+                          <button
+                            onClick={() =>
+                              navigate("distribution/stock", {
+                                state: { data: item, sectionId },
+                              })
+                            }
+                            className="readBtn Btn"
+                          >
+                            <FaEye /> See
+                          </button>
+                          <button
+                            onClick={() => handleAcceptReject(item, "accepted")}
+                            className="editBtn Btn"
+                          >
+                            <MdCheck /> Accept
+                          </button>
+                          <button
+                            onClick={() => handleAcceptReject(item, "rejected")}
+                            className="deleteBtn Btn"
+                          >
+                            <MdClose /> Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-        </div>
+        </>
       )}
-      <h4>Accepted Stocks</h4>
+      <h4 className="mt-4">Accepted Stocks</h4>
       {loading ? (
         <div className="loading-spinner">
           <ClipLoader size={30} color="#00BFFF" loading={loading} />
@@ -254,9 +244,7 @@ const UserDistributionView = ({ sectionId }) => {
       ) : (
         <div className="table_main">
           {accepted.length <= 0 ? (
-            <>
-              <div className="text-center">No Stock distributed accepted</div>
-            </>
+            <div className="text-center">No Stock distributed accepted</div>
           ) : (
             <DataTable columns={columns} data={accepted} />
           )}
