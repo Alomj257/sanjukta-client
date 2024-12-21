@@ -16,7 +16,7 @@ const UserDistributionView = ({ sectionId }) => {
   const getStocksGroupByDate = async () => {
     try {
       const response = await fetch(
-        apis().getStocksGroupByDate(sectionId, "assign")
+        apis().getStocksGroupByDate(sectionId, "assigned")
       );
       if (!response.ok) throw new Error("Failed to fetch data");
       const result = await response.json();
@@ -36,7 +36,7 @@ const UserDistributionView = ({ sectionId }) => {
   const fetchAccepted = async () => {
     try {
       const response = await fetch(
-        apis().getStocksGroupByDate(sectionId, "accept")
+        apis().getStocksGroupByDate(sectionId, "accepted")
       );
       if (!response.ok) throw new Error("Failed to fetch data");
       const result = await response.json();
@@ -109,10 +109,47 @@ const UserDistributionView = ({ sectionId }) => {
               navigate("return-stock", {
                 state: { sectionId, date: row?.date, stocks: row?.stocks },
               })}
-            className="readBtn Btn bg-transparent text-primary"
+            className="readBtn Btn bg-danger text-white"
           >
             Return Stocks
           </button>
+        </div>
+      ),
+    },
+    {
+      name: "Add Product",
+      cell: (row) => (
+        <div className="d-flex gap-4 justify-content-center">
+          <button
+            className="editBtn Btn text-white bg-success"
+            style={{ background: "gray" }}
+            onClick={() =>
+              navigate("product/add-update-product", {
+                state: { sectionId, date: row?.date, stocks: row?.stocks },
+              })
+            }
+          >
+            New Product
+          </button>
+        </div>
+      ),
+    },
+    {
+      name: "Products",
+      cell: (row) => (
+        <div className="d-flex gap-2">
+          {row?.product?.productName && (
+            <button
+              className=" editBtn Btn bg-info text-white"
+              onClick={() =>
+                navigate("product", {
+                  state: { sectionId, date: row?.date, product: row?.product },
+                })
+              }
+            >
+              Products
+            </button>
+          )}
         </div>
       ),
     },
@@ -128,48 +165,21 @@ const UserDistributionView = ({ sectionId }) => {
             }
             className="readBtn Btn"
           >
-            <FaEye /> See
+            <FaEye />
           </button>
-          <button
-            disabled
-            className="editBtn Btn"
-            style={{ background: "lightgreen" }}
+          <span
+            style={{
+              color: "green",
+              fontWeight: '600',
+              fontSize: '14px',
+            }}
           >
-            <MdCheck /> Accepted
-          </button>
+            Accepted
+          </span>
         </div>
       ),
-    },
-    {
-      name: "Product",
-      cell: (row) => (
-        <div className="d-flex gap-2">
-          {row?.product?.productName && (
-            <button
-              className=" editBtn Btn text-warning p-1"
-              onClick={() =>
-                navigate("product", {
-                  state: { sectionId, date: row?.date, product: row?.product },
-                })
-              }
-            >
-              Products
-            </button>
-          )}
-          <button
-            className="editBtn Btn text-warning"
-            style={{ background: "gray" }}
-            onClick={() =>
-              navigate("product/add-update-product", {
-                state: { sectionId, date: row?.date, stocks: row?.stocks },
-              })
-            }
-          >
-            New Product
-          </button>
-        </div>
-      ),
-    },
+    }
+    
   ];
   return (
     <>
@@ -216,13 +226,13 @@ const UserDistributionView = ({ sectionId }) => {
                           <FaEye /> See
                         </button>
                         <button
-                          onClick={() => handleAcceptReject(item, "accept")}
+                          onClick={() => handleAcceptReject(item, "accepted")}
                           className="editBtn Btn"
                         >
                           <MdCheck /> Accept
                         </button>
                         <button
-                          onClick={() => handleAcceptReject(item, "reject")}
+                          onClick={() => handleAcceptReject(item, "rejected")}
                           className="deleteBtn Btn"
                         >
                           <MdClose /> Reject
@@ -248,77 +258,6 @@ const UserDistributionView = ({ sectionId }) => {
               <div className="text-center">No Stock distributed accepted</div>
             </>
           ) : (
-            // <table className="item-table">
-            //   <thead>
-            //     <tr>
-            //       <th>Stocks</th>
-            //       <th>Date</th>
-            //       <th>Status</th>
-            //       <th>Action</th>
-            //       <th>Product</th>
-            //     </tr>
-            //   </thead>
-            //   <tbody>
-            //     {accepted?.map((item, index) => (
-            //       <tr key={index}>
-            //         <td>{item?.stocks?.length}</td>
-            //         <td>
-            //           {new Date(item?.date).toLocaleDateString()}{" "}
-            //           {new Date(item?.date).toLocaleTimeString()}
-            //         </td>
-            //         <td>{item?.status}</td>
-            //         <td className="text-center">
-            //           <div className="d-flex gap-4 justify-content-center">
-            //             <button
-            //               onClick={() =>
-            //                 navigate("distribution/stock", {
-            //                   state: { data: item, sectionId },
-            //                 })
-            //               }
-            //               className="readBtn Btn"
-            //             >
-            //               <FaEye /> See
-            //             </button>
-            //             <button
-            //               disabled
-            //               className="editBtn Btn"
-            //               style={{ background: "lightgreen" }}
-            //             >
-            //               <MdCheck /> Accepted
-            //             </button>
-            //           </div>
-            //         </td>
-            //         <td>
-            //           {item?.product?.productName ? (
-            //             <button
-            //             className="bg-transparent border-0 text-capitalize"
-            //             style={{ background: "lightgray" }}
-            //             onClick={() =>
-            //               navigate("add-update-product", {
-            //                 state: { sectionId, date: item?.date,product:item?.product},
-            //               })
-            //             }
-            //           >
-            //            {item?.product?.productName}
-            //           </button>
-            //           ) : (
-            //             <button
-            //               className="editBtn Btn text-warning"
-            //               style={{ background: "gray" }}
-            //               onClick={() =>
-            //                 navigate("add-update-product", {
-            //                   state: { sectionId, date: item?.date,stocks:item?.stocks },
-            //                 })
-            //               }
-            //             >
-            //              Add Product
-            //             </button>
-            //           )}
-            //         </td>
-            //       </tr>
-            //     ))}
-            //   </tbody>
-            // </table>
             <DataTable columns={columns} data={accepted} />
           )}
         </div>

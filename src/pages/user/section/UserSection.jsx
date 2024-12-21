@@ -3,8 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import apis from "../../../utils/apis"; // Import your apis.js
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { MdWarning } from "react-icons/md";
 import UserDistributionView from "./UserDistributionView";
 
@@ -15,7 +13,7 @@ const UserSection = () => {
   const [sectionId, setSectionId] = useState("");
   const email = localStorage.getItem("email");
   const { state } = useLocation();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserByEmail = async () => {
@@ -83,29 +81,6 @@ const UserSection = () => {
     }
   }, [id]);
 
-  const downloadPDF = async () => {
-    const element = document.querySelector(".suppier_main");
-    const button = element.querySelector("button");
-    if (button) button.style.display = "none"; // Hide the button in the PDF
-
-    const canvas = await html2canvas(element);
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-
-    if (button) button.style.display = ""; // Show the button back in the UI
-
-    const fileName = `${sectionData.sectionName.replace(
-      /\s+/g,
-      "_"
-    )}_Details.pdf`;
-    pdf.save(fileName);
-  };
-
   if (loading) {
     return (
       <div className="loading-spinner">
@@ -120,23 +95,13 @@ const UserSection = () => {
   return (
     <div className="suppier_main">
       {state === "review" && (
-        <div className="  rounded bg-light my-3 text-warning text-center">
-          {" "}
+        <div className="rounded bg-light my-3 text-warning text-center">
           <MdWarning /> Section is pending for acceptance, please accept it
         </div>
       )}
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          onClick={downloadPDF}
-          style={{ marginBottom: "20px" }}
-          className="download_pdf ms-auto"
-        >
-          Download as PDF
-        </button>
-      </div>
       <div className="row section_container">
         <div className="d-flex justify-content-between">
-          <div className="col-md-6 section_item ">
+          <div className="col-md-6 section_item">
             <label>Section </label>
             <span className="fw-bold"> {sectionData.sectionName}</span>
           </div>

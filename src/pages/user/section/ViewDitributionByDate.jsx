@@ -89,7 +89,7 @@ const ViewDitributionByDate = ({role}) => {
     <>
       <div className="section-container">
         <h4 className="mt-4">Stock Distributed</h4>
-        {(role==="user"&&data?.status !== "accept") && (
+        {(role==="user"&&data?.status !== "accepted") && (
           <>
             <div className="text-warning  text-center">
               <MdOutlineWarningAmber /> These stocks are not accepted,{" "}

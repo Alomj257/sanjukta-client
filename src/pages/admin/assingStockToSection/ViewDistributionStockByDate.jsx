@@ -93,9 +93,9 @@ const ViewDistributionStockByDate = () => {
                         >
                           <MdCheck /> Accept
                         </button> */}
-          {row?.status === "reject" && (
+          {row?.status === "rejected" && (
             <button
-              onClick={() => handleAcceptReject(row, "assign")}
+              onClick={() => handleAcceptReject(row, "assigned")}
               className="deleteBtn Btn"
             >
               <MdClose /> Reassign

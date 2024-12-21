@@ -39,10 +39,17 @@ const DistributeStock = ({ stocks, setStocks }) => {
       setStocks(updatedStocks);
     }
 
-    if (name === "qty" && stocks[index]?._id) {
-      const isValid = await isValidQuantity(stocks[index]?._id, value);
-      const updatedErrors = { ...errors, [index]: !isValid };
-      setErrors(updatedErrors);
+    if (name === "qty") {
+      // Validate quantity input
+      if (!value || isNaN(value) || value <= 0) {
+        const updatedErrors = { ...errors, [index]: "Quantity must be a valid number greater than 0" };
+        setErrors(updatedErrors);
+      } else {
+        const isValid = await isValidQuantity(stocks[index]?._id, value);
+
+        const updatedErrors = { ...errors, [index]: isValid ? null : "This much quantity is not available" };
+        setErrors(updatedErrors);
+      }
 
       const updatedStocks = stocks.map((stock, idx) =>
         idx === index ? { ...stock, qty: value } : stock
@@ -141,7 +148,7 @@ const DistributeStock = ({ stocks, setStocks }) => {
               />
               {errors[index] && (
                 <small className="text-danger">
-                  This much quantity is not available
+                  {errors[index]}
                 </small>
               )}
             </div>

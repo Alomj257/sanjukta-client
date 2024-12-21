@@ -85,15 +85,12 @@ const SectionTable = () => {
             selector: row => row.userPhone,
         },
         {
-            name: 'Distribute Stock',
+            name: 'Stock Distribution',
             cell: row => (
                 <div>
-                    <button onClick={() => navigate("stocks", { state: { sectionData: row } })} className='distributBtn Btn'>Distr. Stock</button>
+                    <button onClick={() => navigate("stocks", { state: { sectionData: row } })} className='distributBtn Btn'>Distribute Stock</button>
                 </div>
             ),
-            ignoreRowClick: true,
-            allowOverflow: true,
-            button: true,
         },
         {
             name: 'Actions',
