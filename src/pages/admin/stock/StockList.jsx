@@ -130,7 +130,7 @@ const StockList = () => {
 
   // JSX Return
   return (
-    <div className="stock">
+    <div className="stock" style={{padding: '10px'}}>
       <h3 className="stock-header-title">Stock List</h3>
       <div className="stock-header-actions mb-3">
         <input

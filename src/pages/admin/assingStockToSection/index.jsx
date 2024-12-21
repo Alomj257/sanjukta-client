@@ -48,7 +48,7 @@ const AssignStockToSection = () => {
   };
   return (
     <div className="">
-      <h4 style={{ paddingTop: "20px" }}>Stock Distribute</h4>
+      <h3 style={{ paddingTop: "20px", marginLeft: '10px' }}>Stock Distribute</h3>
       <DistributeStock
         error={error}
         setError={setError}
