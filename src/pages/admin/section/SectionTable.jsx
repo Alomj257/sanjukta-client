@@ -128,7 +128,7 @@ const SectionTable = () => {
             if (!response.ok) throw new Error('Failed to delete section');
             setData(data.filter(item => item._id !== sectionToDelete._id));
             setRecords(records.filter(item => item._id !== sectionToDelete._id));
-            toast.success('Supplier deleted successfully');
+            toast.success('Section deleted successfully');
         } catch (error) {
             toast.error(error.message);
         } finally {
