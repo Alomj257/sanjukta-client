@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./product.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { FaPlus, FaTrashAlt } from "react-icons/fa";
+// import { FaPlus, FaTrashAlt } from "react-icons/fa";
 import Input from "../../../components/ui/Input";
 import LoadingButton from "../../../components/ui/LoadingButton";
 import Button from "../../../components/ui/Button";
@@ -17,13 +17,13 @@ const AddUpdateProduct = () => {
     newProductName: "",
     qty: 0,
     unit: "",
-    stocks: [
-      {
-        _id: "",
-        unit: "",
-        qty: null,
-      },
-    ],
+    // stocks: [
+    //   {
+    //     _id: "",
+    //     unit: "",
+    //     qty: null,
+    //   },
+    // ],
   });
 
   const navigate = useNavigate();
@@ -42,34 +42,34 @@ const AddUpdateProduct = () => {
 
   useEffect(() => {
     if (state && state.stocks) {
-      setFormData((pre) => ({ ...pre, stocks: state.stocks }));
+      // setFormData((pre) => ({ ...pre, stocks: state.stocks }));
     }
   }, [state]);
 
   const handleChange = (e, index, isItemField = false) => {
     const { name, value } = e.target;
     if (isItemField) {
-      const updatedItems = [...formData.stocks];
-      updatedItems[index][name] =
-        name === "qty" || name === "pricePerItem"
-          ? parseFloat(value) || null
-          : value;
-      setFormData({ ...formData, stocks: updatedItems });
+      // const updatedItems = [...formData.stocks];
+      // updatedItems[index][name] =
+      //   name === "qty" || name === "pricePerItem"
+      //     ? parseFloat(value) || null
+      //     : value;
+      // setFormData({ ...formData, stocks: updatedItems });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
   const addNewItem = () => {
-    setFormData({
-      ...formData,
-      stocks: [...formData.stocks, { _id: "", unit: "", qty: null }],
-    });
+    // setFormData({
+    //   ...formData,
+    //   stocks: [...formData.stocks, { _id: "", unit: "", qty: null }],
+    // });
   };
 
   const removeItem = (index) => {
-    const updatedItems = formData.stocks.filter((_, i) => i !== index);
-    setFormData({ ...formData, stocks: updatedItems });
+    // const updatedItems = formData.stocks.filter((_, i) => i !== index);
+    // setFormData({ ...formData, stocks: updatedItems });
   };
 
   const handleSubmit = async (e) => {
@@ -221,9 +221,9 @@ const AddUpdateProduct = () => {
               />
             </div>
           )}
-          <h4 style={{ paddingTop: "20px" }}>Stocks</h4>
+          {/* <h4 style={{ paddingTop: "20px" }}>Stocks</h4> */}
 
-          {formData.stocks.map((item, index) => (
+          {/* {formData.stocks.map((item, index) => (
             <div key={index} className="col-md-12 product_item">
               <div className="row">
                 <div className="col-md-4">
@@ -293,7 +293,7 @@ const AddUpdateProduct = () => {
                 </div>
               </div>
             </div>
-          ))}
+          ))} */}
 
           <div className="col-md-4 product_item mt-5">
             <Button>
