@@ -32,6 +32,7 @@ import ViewProduct from './pages/admin/newStock/ViewProduct';
 import Product from './pages/user/product/ProductList';
 import AddUpdateReturnStock from './pages/user/returnStock/AddUpadateReturnStock';
 import Logout from './components/auth/Logout';
+import ReportPage from './pages/admin/report/ReportPage';
 
 // Protects routes based on user role
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="supplier/add" element={<AddSupplier/>} />
         <Route path="supplier/view/:id" element={<ViewSupplier/>} />
         <Route path="supplier/edit/:id" element={<EditSupplier/>} />
+        <Route path="report" element={<ReportPage/>} />
 
         <Route path="stock" element={<Stock/>} />
         <Route path='stock/existing' element={<StockTable/>} />
