@@ -7,7 +7,7 @@ import DeleteModal from "../../../components/model/DeleteModal";
 import AddUpdateStock from "../../admin/assingStockToSection/addStock";
 import toast from "react-hot-toast";
 
-const ViewDitributionByDate = ({role}) => {
+const ViewDistributionByDate = ({ role }) => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -16,8 +16,8 @@ const ViewDitributionByDate = ({role}) => {
   const [details, setDetails] = useState({});
   const { state } = useLocation();
   const { data, sectionId } = state;
-
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!data || !sectionId) navigate(-1);
   }, [data, sectionId]);
@@ -42,16 +42,16 @@ const ViewDitributionByDate = ({role}) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchDataByDate();
   }, [data?.date, sectionId]);
 
   const handleEdit = (row) => {
-    // navigate(`/admin/section/edit/${row._id}`, { state: { sectionData: row } });
     setPopUp(true);
     setDetails(row);
   };
-  
+
   const refetch = () => {
     fetchDataByDate();
   };
@@ -88,15 +88,22 @@ const ViewDitributionByDate = ({role}) => {
   return (
     <>
       <div className="section-container">
-        <h4 className="mt-4">Stock Distributed</h4>
-        {(role==="user"&&data?.status !== "accepted") && (
-          <>
-            <div className="text-warning  text-center">
-              <MdOutlineWarningAmber /> These stocks are not accepted,{" "}
-              <strong>Please accept it.</strong>
-            </div>
-          </>
+        <button
+          onClick={() => navigate(-1)}
+          className="btn btn-secondary mt-2"
+          style={{ marginBottom: "1rem", marginLeft: '10px'}}
+        >
+          Back
+        </button>
+
+        <h4 className="mt-3" style={{marginLeft: '10px'}}>Stock Distributed</h4>
+        {(role === "user" && data?.status !== "accepted") && (
+          <div className="text-warning text-center">
+            <MdOutlineWarningAmber /> These stocks are not accepted, {" "}
+            <strong>Please accept it.</strong>
+          </div>
         )}
+
         {loading ? (
           <div className="loading-spinner">
             <ClipLoader size={30} color="#00BFFF" loading={loading} />
@@ -104,17 +111,15 @@ const ViewDitributionByDate = ({role}) => {
         ) : (
           <div className="table_main">
             {records.length <= 0 ? (
-              <>
-                <div className="text-center">No Stock distributed</div>
-              </>
+              <div className="text-center">No Stock distributed</div>
             ) : (
               <table className="item-table">
                 <thead>
                   <tr>
-                    <th>Stock </th>
+                    <th>Stock</th>
                     <th>Quantity</th>
                     <th>Date</th>
-                   {role==="admin"&& <th>Action</th>}
+                    {role === "admin" && <th>Action</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -126,26 +131,21 @@ const ViewDitributionByDate = ({role}) => {
                         {item?.unit}
                       </td>
                       <td>
-                        {new Date(item?.date).toLocaleDateString()}{" "}
+                        {new Date(item?.date).toLocaleDateString()} {" "}
                         {new Date(item?.date).toLocaleTimeString()}
                       </td>
-                     {role==="admin"&& <td>
-                      <div>
-                        {/* <button onClick={() => handleView(row)} className='readBtn Btn'><FaEye /></button> */}
-                        <button
-                          onClick={() => handleEdit(item)}
-                          className="editBtn Btn"
-                        >
-                          <MdEdit />
-                        </button>
-                        {/* <button
-                          onClick={() => handleDelete(item)}
-                          className="deleteBtn Btn"
-                        >
-                          <MdDelete />
-                        </button> */}
-                      </div>
-                    </td>}
+                      {role === "admin" && (
+                        <td>
+                          <div>
+                            <button
+                              onClick={() => handleEdit(item)}
+                              className="editBtn Btn"
+                            >
+                              <MdEdit />
+                            </button>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -154,6 +154,7 @@ const ViewDitributionByDate = ({role}) => {
           </div>
         )}
       </div>
+
       {showDeleteModal && (
         <DeleteModal
           supplierName={sectionToDelete.supplierName}
@@ -161,7 +162,8 @@ const ViewDitributionByDate = ({role}) => {
           onCancel={() => setShowDeleteModal(false)}
         />
       )}
-        {popUp && (
+
+      {popUp && (
         <AddUpdateStock
           reFetch={refetch}
           details={details}
@@ -172,4 +174,4 @@ const ViewDitributionByDate = ({role}) => {
   );
 };
 
-export default ViewDitributionByDate;
+export default ViewDistributionByDate;

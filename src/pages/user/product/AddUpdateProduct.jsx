@@ -101,6 +101,9 @@ const AddUpdateProduct = () => {
       <form onSubmit={handleSubmit}>
         <div className="row product_container">
           <h4>Product Details</h4>
+          <button className="btn btn-secondary" style={{width: '6%', padding: '6px', margin: '10px'}} onClick={() => navigate(-1)}>
+            Back
+          </button>
           {productList.map((product, index) => (
             <div key={index} className="col-md-12 product_item">
               <div className="row">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { FaPlus, FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt } from "react-icons/fa";
 import Input from "../../../components/ui/Input";
 import LoadingButton from "../../../components/ui/LoadingButton";
 import Button from "../../../components/ui/Button";
@@ -40,25 +40,13 @@ const AddUpdateReturnStock = () => {
     }
   }, [state]);
 
-  const handleChange = (e, index, isItemField = false) => {
+  const handleChange = (e, index) => {
     const { name, value } = e.target;
-    if (isItemField) {
+    if (name === "qty") {
       const updatedItems = [...formData.stocks];
-      updatedItems[index][name] =
-        name === "qty" || name === "pricePerItem"
-          ? parseFloat(value) || null
-          : value;
+      updatedItems[index][name] = parseFloat(value) || null;
       setFormData({ ...formData, stocks: updatedItems });
-    } else {
-      setFormData({ ...formData, [name]: value });
     }
-  };
-
-  const addNewItem = () => {
-    setFormData({
-      ...formData,
-      stocks: [...formData.stocks, { _id: "", unit: "", qty: null }],
-    });
   };
 
   const removeItem = (index) => {
@@ -69,7 +57,7 @@ const AddUpdateReturnStock = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url =apis().addReturnStock;
+      const url = apis().addReturnStock;
       const response = await fetch(url, {
         method: state?.product ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
@@ -105,7 +93,6 @@ const AddUpdateReturnStock = () => {
       } catch (error) {
         console.error("Error fetching sections:", error);
         toast.error(error.message);
-      } finally {
       }
     };
     fetchSection();
@@ -113,21 +100,27 @@ const AddUpdateReturnStock = () => {
 
   return (
     <div className="suppier_main">
+      <h4 className="mt-2 mb-3">Return Stocks</h4>
+      <button
+        type="button"
+        className="btn btn-secondary mb-3"
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </button>
       <form onSubmit={handleSubmit}>
         <div className="row product_container">
-          <h4>Return Stocks</h4>
-          <h4 style={{ paddingTop: "20px" }}>Stocks</h4>
+          <h4 style={{ paddingTop: "20px", marginBottom: '20px'}}>Select quantity for return from available quantity *</h4>
 
           {formData.stocks.map((item, index) => (
             <div key={index} className="col-md-12 product_item">
               <div className="row">
                 <div className="col-md-4">
-                  <label>Select Stocks</label>
+                  <label>Selected Stock</label>
                   <select
                     name="_id"
                     value={item._id}
-                    onChange={(e) => handleChange(e, index, true)}
-                    required
+                    disabled
                     className="custom-select"
                   >
                     <option value="">Select Stock</option>
@@ -149,18 +142,17 @@ const AddUpdateReturnStock = () => {
                     type="number"
                     name="qty"
                     value={item.qty}
-                    onChange={(e) => handleChange(e, index, true)}
+                    onChange={(e) => handleChange(e, index)}
                     placeholder="Enter quantity"
                     required
                   />
                 </div>
                 <div className="col-md-3 product_item">
-                  <label>Unit *</label>
+                  <label>Unit</label>
                   <select
                     name="unit"
                     value={item.unit}
-                    onChange={(e) => handleChange(e, index, true)}
-                    required
+                    disabled
                     className="custom-select"
                   >
                     <option value="">Select unit</option>
@@ -168,15 +160,8 @@ const AddUpdateReturnStock = () => {
                     <option value="ltr">Ltr</option>
                   </select>
                 </div>
-                <div className="col-md-1 d-flex align-items-end gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-primary itemBtn"
-                    onClick={addNewItem}
-                  >
-                    <FaPlus />
-                  </button>
-                  {formData.stocks.length > 1 && (
+                {formData.stocks.length > 1 && (
+                  <div className="col-md-1 d-flex align-items-end">
                     <button
                       type="button"
                       className="btn btn-danger itemBtn"
@@ -184,8 +169,8 @@ const AddUpdateReturnStock = () => {
                     >
                       <FaTrashAlt />
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}

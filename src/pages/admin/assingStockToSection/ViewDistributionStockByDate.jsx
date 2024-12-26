@@ -57,7 +57,7 @@ const ViewDistributionStockByDate = () => {
     }
   };
   const columns = [
-   
+
     {
       name: "Date",
       selector: (row) =>
@@ -85,14 +85,8 @@ const ViewDistributionStockByDate = () => {
             }
             className="readBtn Btn"
           >
-            <FaEye /> See
+            View or Edit
           </button>
-          {/* <button
-                        //   onClick={() => handleAcceptReject(item, "accept")}
-                          className="editBtn Btn"
-                        >
-                          <MdCheck /> Accept
-                        </button> */}
           {row?.status === "rejected" && (
             <button
               onClick={() => handleAcceptReject(row, "assigned")}
@@ -119,58 +113,7 @@ const ViewDistributionStockByDate = () => {
               <div className="text-center">No any stock </div>
             </>
           ) : (
-            // <table className="item-table">
-            //   <thead>
-            //     <tr>
-            //       <th>Stocks</th>
-            //       <th>Date</th>
-            //       <th>Status</th>
-            //       <th>Action</th>
-            //     </tr>
-            //   </thead>
-            //   <tbody>
-            //     {records?.map((item, index) => (
-            //       <tr key={index}>
-            //         <td>{item?.stocks?.length}</td>
-            //         <td>
-            //           {new Date(item?.date).toLocaleDateString()}{" "}
-            //           {new Date(item?.date).toLocaleTimeString()}
-            //         </td>
-            //         <td>{item?.status}</td>
-            //         <td className="text-center">
-            //           <div className="d-flex gap-4 justify-content-center">
-            //             <button
-            //               onClick={() =>
-            //                 navigate("distribution/stock", {
-            //                   state: { data: item, sectionId },
-            //                 })
-            //               }
-            //               className="readBtn Btn"
-            //             >
-            //               <FaEye /> See
-            //             </button>
-            //             {/* <button
-            //             //   onClick={() => handleAcceptReject(item, "accept")}
-            //               className="editBtn Btn"
-            //             >
-            //               <MdCheck /> Accept
-            //             </button> */}
-            //             {item?.status === "reject" && (
-            //               <button
-            //                 onClick={() => handleAcceptReject(item, "assign")}
-            //                 className="deleteBtn Btn"
-            //               >
-            //                 <MdClose /> Reassign
-            //               </button>
-            //             )}
-            //           </div>
-            //         </td>
-            //       </tr>
-            //     ))}
-            //   </tbody>
-            // </table>
             <DataTable columns={columns} data={records} />
-
           )}
         </div>
       )}

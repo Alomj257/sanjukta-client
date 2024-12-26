@@ -50,7 +50,7 @@ const ProductList = () => {
     return <div>Error: {error}</div>;
   }
   return (
-    <div className="stock">
+    <div className="stock" style={{padding: '10px'}}>
       <h3 className="stock-header-title">Product List</h3>
       <div className="stock-header-actions mb-3">
         <input

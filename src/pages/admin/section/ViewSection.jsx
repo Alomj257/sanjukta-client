@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import apis from "../../../utils/apis"; // Import your apis.js
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
-import ViewDistribution from "../assingStockToSection/ViewDistribution";
 import ViewDistributionStockByDate from "../assingStockToSection/ViewDistributionStockByDate";
 
 const ViewSection = () => {
@@ -98,7 +97,6 @@ const ViewSection = () => {
           <span>{sectionData?.userPhone}</span>
         </div>
 
-        {/* <ViewDistribution /> */}
         <ViewDistributionStockByDate />
       </div>
     </div>
