@@ -220,12 +220,12 @@ const UserDistributionView = ({ sectionId }) => {
                           >
                             <MdCheck /> Accept
                           </button>
-                          <button
+                          {/* <button
                             onClick={() => handleAcceptReject(item, "rejected")}
                             className="deleteBtn Btn"
                           >
                             <MdClose /> Reject
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>

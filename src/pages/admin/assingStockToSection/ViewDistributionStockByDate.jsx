@@ -96,6 +96,7 @@ const ViewDistributionStockByDate = () => {
             </button>
           )}
         </div>
+        
       ),
     },
   ];

@@ -88,6 +88,7 @@ const ViewDistributionByDate = ({ role }) => {
   return (
     <>
       <div className="section-container">
+        <h4 className="mt-3" style={{marginLeft: '10px'}}>Stock Distributed</h4>
         <button
           onClick={() => navigate(-1)}
           className="btn btn-secondary mt-2"
@@ -95,8 +96,6 @@ const ViewDistributionByDate = ({ role }) => {
         >
           Back
         </button>
-
-        <h4 className="mt-3" style={{marginLeft: '10px'}}>Stock Distributed</h4>
         {(role === "user" && data?.status !== "accepted") && (
           <div className="text-warning text-center">
             <MdOutlineWarningAmber /> These stocks are not accepted, {" "}

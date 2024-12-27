@@ -20,7 +20,7 @@ const Sidebar = ({ role }) => {
             { name: 'Supplier', path: '/admin/supplier', icon: <FaUsers /> },
             { name: 'Stock', path: '/admin/stock', icon: <MdInventory /> },
             { name: 'Section', path: '/admin/section', icon: <FaPeopleGroup /> },
-            { name: 'New Stock', path: '/admin/product', icon: <FaPeopleCarryBox /> },
+            { name: 'Products', path: '/admin/product', icon: <FaPeopleCarryBox /> },
             { name: 'Logout', path: '/logout', icon: <IoLogOut />},
         ],
         user: [

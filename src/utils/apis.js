@@ -69,7 +69,12 @@ const apis = () => {
 
     // Return Stock
     addReturnStock: `${local}return-stock/`,
+
+    //Report
+    getDailyStockReport: (sectionId, date) =>
+      `${local}section/stock/daily-report/${sectionId}/${date}`,
   };
+  
 
   return list;
 };

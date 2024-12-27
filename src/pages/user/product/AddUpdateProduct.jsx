@@ -9,7 +9,6 @@ import Button from "../../../components/ui/Button";
 import apis from "../../../utils/apis";
 
 const AddUpdateProduct = () => {
-  const [productList, setProductList] = useState([{ productName: "", qty: 0, unit: "", price: 0 }]);
   const [stockList, setStockList] = useState([]);
   const [newStockList, setNewStockList] = useState([]);
   const { state } = useLocation();
@@ -18,6 +17,13 @@ const AddUpdateProduct = () => {
     newProductName: "",
     qty: 0,
     unit: "",
+    stocks: [
+      {
+        _id: "",
+        unit: "",
+        qty: null,
+      },
+    ],
   });
 
   const navigate = useNavigate();
@@ -34,20 +40,51 @@ const AddUpdateProduct = () => {
     }
   }, [state]);
 
-  const handleProductChange = (e, index) => {
+  useEffect(() => {
+    if (state && state.stocks) {
+      setFormData((pre) => ({ ...pre, stocks: state.stocks }));
+    }
+  }, [state]);
+
+  // Fetch corresponding unit when a product is selected
+  useEffect(() => {
+    if (formData.productName && newStockList.length > 0) {
+      const selectedProduct = newStockList.find(
+        (product) => product.productName === formData.productName
+      );
+      if (selectedProduct) {
+        setFormData((prev) => ({
+          ...prev,
+          unit: selectedProduct.unit || "", // Set unit from selected product
+        }));
+      }
+    }
+  }, [formData.productName, newStockList]);
+
+  const handleChange = (e, index, isItemField = false) => {
     const { name, value } = e.target;
-    const updatedProducts = [...productList];
-    updatedProducts[index][name] = name === "qty" || name === "price" ? parseFloat(value) || 0 : value;
-    setProductList(updatedProducts);
+    if (isItemField) {
+      const updatedItems = [...formData.stocks];
+      updatedItems[index][name] =
+        name === "qty" || name === "pricePerItem"
+          ? parseFloat(value) || null
+          : value;
+      setFormData({ ...formData, stocks: updatedItems });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
-  const addNewProduct = () => {
-    setProductList([...productList, { productName: "", qty: 0, unit: "", price: 0 }]);
+  const addNewItem = () => {
+    setFormData({
+      ...formData,
+      stocks: [...formData.stocks, { _id: "", unit: "", qty: null }],
+    });
   };
 
-  const removeProduct = (index) => {
-    const updatedProducts = productList.filter((_, i) => i !== index);
-    setProductList(updatedProducts);
+  const removeItem = (index) => {
+    const updatedItems = formData.stocks.filter((_, i) => i !== index);
+    setFormData({ ...formData, stocks: updatedItems });
   };
 
   const handleSubmit = async (e) => {
@@ -60,7 +97,7 @@ const AddUpdateProduct = () => {
         method: state?.product ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          products: productList, // Send the list of products
+          ...formData,
           sectionId: state?.sectionId,
           date: state.date,
         }),
@@ -71,10 +108,10 @@ const AddUpdateProduct = () => {
         toast.success(result.message);
         navigate(-1);
       } else {
-        toast.error(result.message || "Failed to add products");
+        toast.error(result.message || "Failed to add supplier");
       }
     } catch (error) {
-      toast.error(error.message || "An error occurred while adding products");
+      toast.error(error.message || "An error occurred while adding supplier");
     }
   };
 
@@ -96,90 +133,117 @@ const AddUpdateProduct = () => {
     fetchSection();
   }, []);
 
+  useEffect(() => {
+    const fetchSection = async () => {
+      try {
+        const response = await fetch(apis().getAllNewStock);
+        if (!response.ok) throw new Error("Failed to fetch sections");
+
+        const result = await response.json();
+        if (result && result?.stockList && result?.stockList?.length > 0) {
+          setNewStockList(result?.stockList);
+        }
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+        toast.error(error.message);
+      }
+    };
+    fetchSection();
+  }, []);
+
   return (
     <div className="suppier_main">
+      <button
+          onClick={() => navigate(-1)}
+          className="btn btn-secondary mt-2"
+          style={{ marginBottom: "1rem", marginLeft: '10px'}}
+        >
+          Back
+        </button>
       <form onSubmit={handleSubmit}>
         <div className="row product_container">
           <h4>Product Details</h4>
-          <button className="btn btn-secondary" style={{width: '6%', padding: '6px', margin: '10px'}} onClick={() => navigate(-1)}>
-            Back
-          </button>
-          {productList.map((product, index) => (
-            <div key={index} className="col-md-12 product_item">
-              <div className="row">
-                <div className="col-md-3">
-                  <label>Product Name</label>
-                  <Input
-                    type="text"
-                    name="productName"
-                    value={product.productName}
-                    onChange={(e) => handleProductChange(e, index)}
-                    placeholder="Enter product name"
-                    required
-                  />
-                </div>
-                <div className="col-md-2">
-                  <label>Quantity</label>
-                  <Input
-                    type="number"
-                    name="qty"
-                    value={product.qty}
-                    onChange={(e) => handleProductChange(e, index)}
-                    placeholder="Enter quantity"
-                    required
-                  />
-                </div>
-                <div className="col-md-2">
-                  <label>Unit</label>
-                  <select
-                    name="unit"
-                    value={product.unit}
-                    onChange={(e) => handleProductChange(e, index)}
-                    required
-                    className="custom-select"
+          <div
+            className={`col-md-${formData.productName === "other" ? "2" : "6"}`}
+          >
+            <label>Select Product</label>
+            <select
+              name="productName"
+              value={formData.productName}
+              onChange={(e) => handleChange(e)}
+              required
+              className="custom-select"
+            >
+              <option value="">Select Product Name</option>
+              {newStockList &&
+                newStockList?.map((val, index) => (
+                  <option
+                    className="text-capitalize"
+                    key={index}
+                    value={val?.productName}
                   >
-                    <option value="">Select unit</option>
-                    <option value="kg">Kg</option>
-                    <option value="ltr">Ltr</option>
-                    <option value="piece">Piece</option>
-                  </select>
-                </div>
-                <div className="col-md-3">
-                  <label>Price</label>
-                  <Input
-                    type="number"
-                    name="price"
-                    value={product.price}
-                    onChange={(e) => handleProductChange(e, index)}
-                    placeholder="Enter price"
-                    required
-                  />
-                </div>
-                <div className="col-md-2 d-flex align-items-end gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-primary itemBtn"
-                    onClick={addNewProduct}
-                  >
-                    <FaPlus />
-                  </button>
-                  {productList.length > 1 && (
-                    <button
-                      type="button"
-                      className="btn btn-danger itemBtn"
-                      onClick={() => removeProduct(index)}
-                    >
-                      <FaTrashAlt />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+                    {val?.productName}
+                  </option>
+                ))}
+              <option value="other">Other</option>
+            </select>
+          </div>
 
-          <div className="col-md-4 product_item mt-5">
+          {formData?.productName === "other" && (
+            <div className="col-md-3 product_item">
+              <label>Product Name *</label>
+              <Input
+                type="text"
+                name="newProductName"
+                value={formData.newProductName}
+                onChange={(e) => handleChange(e)}
+                placeholder="Enter product name"
+                required
+              />
+            </div>
+          )}
+          <div className="col-md-3 product_item">
+            <label>Quantity *</label>
+            <Input
+              type="text"
+              name="qty"
+              value={formData.qty}
+              onChange={(e) => handleChange(e)}
+              placeholder="Enter product quantity"
+              required
+            />
+          </div>
+          <div className="col-md-3 product_item">
+            <label>Unit *</label>
+            <select
+              name="unit"
+              value={formData.unit}
+              onChange={(e) => handleChange(e)}
+              required
+              className="custom-select"
+            >
+              <option value="">Select unit</option>
+              <option value="kg">Kg</option>
+              <option value="ltr">Ltr</option>
+              <option value="piece">Piece</option>
+            </select>
+          </div>
+          {formData?.productName === "other" && (
+            <div className="col-md-6 product_item">
+              <label>Product Rate per unit *</label>
+              <Input
+                type="text"
+                name="price"
+                value={formData.price}
+                onChange={(e) => handleChange(e)}
+                placeholder="Enter product price"
+                required
+              />
+            </div>
+          )}
+          <div className="col-md-3 product_item mt-4">
             <Button>
-              <LoadingButton title="Add products" onClick={handleSubmit} />
+              <LoadingButton title={state?.product ? "Update product" : "Add product"} onClick={handleSubmit} />
             </Button>
           </div>
         </div>
