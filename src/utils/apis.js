@@ -42,6 +42,7 @@ const apis = () => {
     deleteSection: (id) => `${local}section/${id}`,
     getSectionById: (id) => `${local}section/${id}`,
     updateSection: (id) => `${local}section/${id}`,
+    updateSectionDetails: (id) => `${local}section/details/${id}`,
     getSectionByUserId: (userId) => `${local}section/user/data/${userId}`,
     updateSectionStatus: (id, date, status) => `${local}section/status/${id}/${date}/${status}`,
 

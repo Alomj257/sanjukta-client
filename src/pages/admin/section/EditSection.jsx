@@ -79,7 +79,7 @@ const EditSection = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(apis().updateSection(sectionData._id), {
+      const response = await fetch(apis().updateSectionDetails(sectionData._id), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
