@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DatePicker, Table, Empty, Button } from "antd";
+import { DatePicker, Table, Empty, Button, Row, Col } from "antd";
 import apis from "../../../utils/apis"; // Import your apis.js
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import ViewDistributionStockByDate from "../assingStockToSection/ViewDistributionStockByDate";
 import { ClipLoader } from "react-spinners";
+import ViewDistributionStockByDate from "../assingStockToSection/ViewDistributionStockByDate";
 
 const ViewSection = () => {
   const { id } = useParams();
   const [sectionData, setSectionData] = useState(null);
-  const [dailyStockReport, setDailyStockReport] = useState([]);
+  const [reportData, setReportData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedYearMonth, setSelectedYearMonth] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reportLoading, setReportLoading] = useState(false);
+  const [isMonthlyReport, setIsMonthlyReport] = useState(false); // To toggle between daily and monthly reports
   const navigate = useNavigate();
 
   // Fetch section details
@@ -52,7 +54,7 @@ const ViewSection = () => {
         console.error("Error fetching section details:", error);
         toast.error(
           error.message ||
-            "Something went wrong while fetching section details."
+          "Something went wrong while fetching section details."
         );
       } finally {
         setLoading(false);
@@ -73,9 +75,10 @@ const ViewSection = () => {
       const result = await response.json();
 
       if (result?.dailyReport) {
-        setDailyStockReport(result.dailyReport);
+        setReportData(result.dailyReport);
+        setIsMonthlyReport(false); // Set to daily report
       } else {
-        setDailyStockReport([]);
+        setReportData([]);
         toast.error("No stock data found for the selected date.");
       }
     } catch (error) {
@@ -88,74 +91,108 @@ const ViewSection = () => {
     }
   };
 
-  // Handle date change
-  const handleDateChange = (date) => {
-    const formattedDate = dayjs(date).format("YYYY-MM-DD");
-    setSelectedDate(formattedDate);
-    fetchDailyStockReport(formattedDate);
+  // Fetch monthly stock report based on selected year and month
+  const fetchMonthlyStockReport = async (yearMonth) => {
+    setReportLoading(true);
+    try {
+      const apiUrl = apis().getMonthlyStockReport(id, yearMonth);
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error("Failed to fetch monthly stock report");
+
+      const result = await response.json();
+
+      if (result?.monthlyReport) {
+        setReportData(result.monthlyReport);
+        setIsMonthlyReport(true); // Set to monthly report
+      } else {
+        setReportData([]);
+        toast.error("No stock data found for the selected month.");
+      }
+    } catch (error) {
+      console.error("Error fetching monthly stock report:", error);
+      toast.error(
+        error.message || "Something went wrong while fetching stock report."
+      );
+    } finally {
+      setReportLoading(false);
+    }
   };
 
-  // Generate PDF
+  // Handle date change for daily report
+  const handleDateChange = (date) => {
+    if (!date) {
+      setSelectedDate(null);
+      setReportData([]); // Clear data if date is deselected
+    } else {
+      const formattedDate = dayjs(date).format("YYYY-MM-DD");
+      setSelectedDate(formattedDate);
+      fetchDailyStockReport(formattedDate);
+    }
+  };
+
+  // Handle year/month change for monthly report
+  const handleMonthChange = (date) => {
+    if (!date) {
+      setSelectedYearMonth(null);
+      setReportData([]); // Clear data if month is deselected
+    } else {
+      const yearMonth = dayjs(date).format("YYYY-MM");
+      setSelectedYearMonth(yearMonth);
+      fetchMonthlyStockReport(yearMonth);
+    }
+  };
+
+  // Generate PDF based on selected report type (daily or monthly)
   const downloadPDF = () => {
     const doc = new jsPDF();
-  
-    // Set title color to blue
-    doc.setTextColor(0, 0, 255); // RGB for blue
-  
-    // Title of the report
+
+    doc.setTextColor(0, 0, 255);
     doc.setFontSize(16);
-    doc.text("Daily Section Report", 14, 15);
-  
-    // Reset text color to default (black) for other content
-    doc.setTextColor(0, 0, 0); // RGB for black
-  
-    // Format the date as dd-mm-yyyy
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const year = date.getFullYear();
-      return `${day}-${month}-${year}`;
-    };
-    const formattedDate = formatDate(selectedDate);
-  
-    // Section details
+    doc.text(`${isMonthlyReport ? "Monthly" : "Daily"} Section Report`, 14, 15);
+
+    doc.setTextColor(0, 0, 0);
+
     doc.setFontSize(12);
     doc.text(`Section Name: ${sectionData.sectionName}`, 14, 25);
     doc.text(`Section User: ${sectionData.userName}`, 14, 32);
-    doc.text(`Date: ${formattedDate}`, 14, 39);
-  
-    // Narrow horizontal line after the date
-    doc.setLineWidth(0.2); // Narrow line width
-    doc.line(14, 42, 200, 42); // Draws a horizontal line
-  
-    // Table title
+    doc.text(
+      `${isMonthlyReport ? "Month" : "Date"}: ${isMonthlyReport
+        ? dayjs(selectedYearMonth).format("MM-YY")
+        : dayjs(selectedDate).format("DD-MM-YYYY")
+      }`,
+      14,
+      39
+    );
+
+    doc.setLineWidth(0.2);
+    doc.line(14, 42, 200, 42);
+
     doc.setFontSize(14);
-    doc.text("Stock Distributed List", 14, 50);
-  
-    // Reset font size for the table
+    doc.text(`${isMonthlyReport ? "Monthly" : "Daily"} Stock Report`, 14, 50);
+
     doc.setFontSize(12);
-  
-    // Prepare the table data (merging Quantity and Unit)
-    const tableData = dailyStockReport.map((item) => [
+
+    const tableData = reportData.map((item) => [
       item.itemName,
-      `${item.totalQty} ${item.unit}`, // Merge Quantity and Unit
+      `${item.totalQty} ${item.unit}`,
     ]);
-  
-    // Add the table
+
     doc.autoTable({
-      head: [["Item Name", "Quantity"]], // Updated column headers
+      head: [["Item Name", "Quantity"]],
       body: tableData,
-      startY: 55, // Start the table below the title
-      theme: "plain", // No color for the table
+      startY: 55,
+      theme: "plain",
       styles: {
-        halign: "left", // Left align text
-        fontSize: 12, // Set font size for the table
+        halign: "left",
+        fontSize: 12,
       },
     });
-  
-    // Save the PDF
-    doc.save("Daily_Stock_Report.pdf");
+
+    doc.save(
+      `${isMonthlyReport ? "Monthly" : "Daily"}_Stock_Report_${dayjs().format(
+        "DD-MM-YYYY"
+      )}.pdf`
+    );
   };
 
   if (loading) {
@@ -198,11 +235,18 @@ const ViewSection = () => {
           >
             Section
           </span>{" "}
-          / View Details
+          / Details
         </h2>
-        <Button type="primary" onClick={downloadPDF} disabled={!dailyStockReport.length}>
-          Download Report
-        </Button>
+        <div>
+          <Button
+            type="primary"
+            onClick={downloadPDF}
+            disabled={!reportData.length}
+            style={{ marginRight: "10px" }}
+          >
+            Download {isMonthlyReport ? "Monthly" : "Daily"} Report
+          </Button>
+        </div>
       </div>
       <div className="row section_container">
         <h4>Section Details</h4>
@@ -222,41 +266,41 @@ const ViewSection = () => {
           <label>User Phone Number:</label>
           <span>{sectionData?.userPhone}</span>
         </div>
-        <div className="col-md-12">
-          <h4 className="mt-4">Select Date for daily section report</h4>
-          <DatePicker
-            onChange={handleDateChange}
-            format="YYYY-MM-DD"
-            style={{ marginBottom: "20px", marginTop: "10px" }}
-          />
+
+        <div className="col-md-12" style={{marginBottom: '10px'}}>
+          <Row gutter={16} className="mt-3">
+            <Col span={12}>
+              <h4>Select date for daily report</h4>
+              <DatePicker
+                format="YYYY-MM-DD"
+                onChange={handleDateChange}
+                disabledDate={(current) => current && current.isAfter(dayjs())}
+                style={{ width: "100%" }}
+              />
+            </Col>
+            <Col span={12}>
+              <h4>Select month for monthly report</h4>
+              <DatePicker
+                picker="month"
+                format="YYYY-MM"
+                onChange={handleMonthChange}
+                style={{ width: "100%" }}
+              />
+            </Col>
+          </Row>
         </div>
-        <div className="col-md-12">
-          {reportLoading ? (
-            <div className="loading-spinner">
-              <ClipLoader size={30} color="#00BFFF" />
-            </div>
-          ) : selectedDate && dailyStockReport.length > 0 ? (
-            <Table
-              columns={columns}
-              dataSource={dailyStockReport}
-              rowKey={(record) => record.itemName}
-              pagination={false}
-              title={() => `Stock Report for ${selectedDate}`}
-              bordered
-            />
-          ) : (
-            <Empty
-              description={
-                selectedDate
-                  ? "No stock data found for the selected date."
-                  : "Please select a date to view the stock report."
-              }
-            />
-          )}
-        </div>
-        <div className="col-md-12">
-        <h4 className="mt-4">Distributin record</h4>
-        </div>
+
+        <Table
+          columns={columns}
+          dataSource={reportData}
+          loading={reportLoading}
+          rowKey="id"
+          pagination={false}
+          locale={{ emptyText: <Empty description="No data" /> }}
+        />
+        <div className="col-md-12 mt-2">
+        <h4>Stock Distribution Data</h4>
+      </div>
       </div>
       <ViewDistributionStockByDate />
     </div>

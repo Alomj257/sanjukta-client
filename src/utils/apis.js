@@ -74,11 +74,12 @@ const apis = () => {
     //Report
     getDailyStockReport: (sectionId, date) =>
       `${local}section/stock/daily-report/${sectionId}/${date}`,
-
+    getMonthlyStockReport: (sectionId, date) =>
+      `${local}section/stock/monthly-report/${sectionId}/${date}`,
     //Notification
     getNotifications: `${local}notification`
   };
-  
+
 
   return list;
 };
