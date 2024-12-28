@@ -73,6 +73,9 @@ const apis = () => {
     //Report
     getDailyStockReport: (sectionId, date) =>
       `${local}section/stock/daily-report/${sectionId}/${date}`,
+
+    //Notification
+    getNotifications: `${local}notification`
   };
   
 
