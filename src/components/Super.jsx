@@ -44,7 +44,7 @@ const Super = () => {
         return <h2>Loading...</h2>;
     }
 
-    return isAuth ? <Outlet /> : <Navigate to="/login" />;
+    return isAuth ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default Super;

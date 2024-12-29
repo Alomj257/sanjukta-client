@@ -54,7 +54,7 @@ const Register = () => {
 
             if (result?.status) {
                 toast.success(result?.message);
-                navigate('/login');
+                navigate('/');
             }
 
         } catch (error) {

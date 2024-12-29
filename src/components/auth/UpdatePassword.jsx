@@ -45,7 +45,7 @@ const UpdatePassword = () => {
             if(result?.status){
                 toast.success(result?.message)
                 console.log(result)
-                navigate('/login')
+                navigate('/')
                 localStorage.removeItem('email');
                 localStorage.removeItem('passToken');
             }

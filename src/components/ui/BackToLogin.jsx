@@ -7,7 +7,7 @@ const BackToLogin = () => {
   const navigate = useNavigate();
 
   const navigateHandler = () => {
-    navigate('/login');
+    navigate('/');
   }
 
   return (

@@ -5,7 +5,6 @@ import Login from './components/auth/Login';
 import ForgetPassword from './components/auth/ForgetPassword';
 import VerifyOtp from './components/auth/VerifyOtp';
 import UpdatePassword from './components/auth/UpdatePassword';
-import Home from './pages/Home';
 import Super from './components/Super';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLayout from './layouts/AdminLayout';
@@ -40,14 +39,8 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 
   // If no user role exists, redirect to login
   if (!userRole) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // If user role doesn't match the required role, redirect to home or a different page
-  if (requiredRole && userRole !== requiredRole) {
     return <Navigate to="/" replace />;
   }
-
   return children; // Render the children (nested routes)
 };
 
@@ -56,10 +49,9 @@ const App = () => {
     <Routes>
       {/* Public Routes */}
       <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/forget/password" element={<ForgetPassword />} />
-      <Route path="/" element={<Home />} />
 
       {/* Protected Routes for Admin */}
       <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminLayout /></ProtectedRoute>}>
