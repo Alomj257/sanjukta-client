@@ -114,6 +114,10 @@ const StockList = () => {
     }
   };
 
+  const handleAddStock = () => {
+    navigate('/admin/stock/existing/add');
+  };
+
   // Loading Spinner
   if (loading) {
     return (
@@ -130,7 +134,7 @@ const StockList = () => {
 
   // JSX Return
   return (
-    <div className="stock" style={{padding: '10px'}}>
+    <div className="stock" style={{ padding: '10px' }}>
       <h3 className="stock-header-title">Stock List</h3>
       <div className="stock-header-actions mb-3">
         <input
@@ -139,9 +143,16 @@ const StockList = () => {
           className="form-control stock-search"
           onChange={handleSearch}
         />
-        <button className="supplierBtn" onClick={() => navigate('/admin/stock/existing')}>
-          Existing Stock
-        </button>
+
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button className="supplierBtn" onClick={() => navigate('/admin/stock/existing')}>
+            Existing Stock List
+          </button>
+          <button onClick={handleAddStock} className="supplierBtn bg-primary text-white" >
+            Add Existing Stock
+          </button>
+        </div>
+
       </div>
       <hr />
       {filteredStocks.length === 0 ? (

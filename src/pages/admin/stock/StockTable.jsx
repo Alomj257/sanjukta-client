@@ -41,7 +41,7 @@ const StockTable = () => {
                     throw new Error('No stock data found');
                 }
             } catch (error) {
-                toast.error(error.message);
+                // toast.error(error.message);
             } finally {
                 setLoading(false);
             }
@@ -147,8 +147,15 @@ const StockTable = () => {
     return (
         <div className="supplier-container">
             <h3 className="supplier-header-title">Existing Stock List</h3>
-            <h4 onClick={() => {navigate('/admin/stock')}} style={{color: 'blue', cursor: 'pointer'}}>Go to Stock List</h4>
-            
+            {/* <h4 onClick={() => { navigate('/admin/stock') }} style={{ color: 'blue', cursor: 'pointer' }}>Go to Stock List</h4> */}
+            <button
+                onClick={() => { navigate('/admin/stock') }}
+                className="btn btn-secondary mt-2"
+                style={{ marginBottom: "1rem"}}
+            >
+                Back
+            </button>
+
             <div className='supplier-search'>
                 <input
                     type="text"
