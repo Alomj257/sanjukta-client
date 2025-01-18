@@ -155,23 +155,32 @@ const ProductList = () => {
                 </tr>
               </thead>
               <tbody>
-                {notifications.slice(0, showAllNotifications ? notifications.length : 4).map((notification) => (
-                  <tr key={notification._id}>
-                    <td>{notification.sectionId.sectionName}</td>
-                    <td>{notification.productName}</td>
-                    <td>{`${notification.qty} ${notification.unit}`}</td>
-                    <td>{new Date(notification.date).toLocaleString()}</td>
-                    <td>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => deleteNotification(notification._id)}
-                      >
-                        Read
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {notifications
+                  .slice(0, showAllNotifications ? notifications.length : 4)
+                  .map((notification) => (
+                    <tr key={notification._id}>
+                      <td>
+                        {notification.sectionId?.sectionName || "No Section"}
+                      </td>
+                      <td>{notification.productName || "No Product Name"}</td>
+                      <td>{`${notification.qty || 0} ${notification.unit || ""}`}</td>
+                      <td>
+                        {notification.date
+                          ? new Date(notification.date).toLocaleString()
+                          : "No Date"}
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => deleteNotification(notification._id)}
+                        >
+                          Read
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
+
             </table>
             {notifications.length > 4 && (
               <button
