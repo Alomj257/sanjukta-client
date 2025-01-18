@@ -17,6 +17,7 @@ const AddUpdateProduct = () => {
     newProductName: "",
     qty: 0,
     unit: "",
+    price: "",
     stocks: [
       {
         _id: "",
@@ -42,11 +43,10 @@ const AddUpdateProduct = () => {
 
   useEffect(() => {
     if (state && state.stocks) {
-      setFormData((pre) => ({ ...pre, stocks: state.stocks }));
+      setFormData((prev) => ({ ...prev, stocks: state.stocks }));
     }
   }, [state]);
 
-  // Fetch corresponding unit when a product is selected
   useEffect(() => {
     if (formData.productName && newStockList.length > 0) {
       const selectedProduct = newStockList.find(
@@ -55,7 +55,7 @@ const AddUpdateProduct = () => {
       if (selectedProduct) {
         setFormData((prev) => ({
           ...prev,
-          unit: selectedProduct.unit || "", // Set unit from selected product
+          unit: selectedProduct.unit || "",
         }));
       }
     }
@@ -152,19 +152,21 @@ const AddUpdateProduct = () => {
   }, []);
 
   return (
-    <div className="suppier_main">
+    <div className="supplier_main">
       <button
-          onClick={() => navigate(-1)}
-          className="btn btn-secondary mt-2"
-          style={{ marginBottom: "1rem", marginLeft: '10px'}}
-        >
-          Back
-        </button>
+        onClick={() => navigate(-1)}
+        className="btn btn-secondary mt-2"
+        style={{ marginBottom: "1rem", marginLeft: "10px" }}
+      >
+        Back
+      </button>
       <form onSubmit={handleSubmit}>
         <div className="row product_container">
           <h4>Product Details</h4>
           <div
-            className={`col-md-${formData.productName === "other" ? "2" : "6"}`}
+            className={`col-md-${
+              formData.productName === "other" ? "2" : "6"
+            }`}
           >
             <label>Select Product</label>
             <select
@@ -215,18 +217,28 @@ const AddUpdateProduct = () => {
           </div>
           <div className="col-md-3 product_item">
             <label>Unit *</label>
-            <select
-              name="unit"
-              value={formData.unit}
-              onChange={(e) => handleChange(e)}
-              required
-              className="custom-select"
-            >
-              <option value="">Select unit</option>
-              <option value="kg">Kg</option>
-              <option value="ltr">Ltr</option>
-              <option value="piece">Piece</option>
-            </select>
+            {formData.productName === "other" ? (
+              <select
+                name="unit"
+                value={formData.unit}
+                onChange={(e) => handleChange(e)}
+                required
+                className="custom-select"
+              >
+                <option value="">Select unit</option>
+                <option value="kg">Kg</option>
+                <option value="ltr">Ltr</option>
+                <option value="piece">Piece</option>
+              </select>
+            ) : (
+              <Input
+                type="text"
+                name="unit"
+                value={formData.unit}
+                disabled
+                placeholder="Unit will be auto-filled"
+              />
+            )}
           </div>
           {formData?.productName === "other" && (
             <div className="col-md-6 product_item">
@@ -243,7 +255,10 @@ const AddUpdateProduct = () => {
           )}
           <div className="col-md-3 product_item mt-4">
             <Button>
-              <LoadingButton title={state?.product ? "Update product" : "Add product"} onClick={handleSubmit} />
+              <LoadingButton
+                title={state?.product ? "Update product" : "Add product"}
+                onClick={handleSubmit}
+              />
             </Button>
           </div>
         </div>

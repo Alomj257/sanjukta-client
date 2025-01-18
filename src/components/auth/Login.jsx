@@ -1,12 +1,12 @@
 import { React, useState } from 'react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import { AiOutlineLogin } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
 import './auth.css';
 import toast from 'react-hot-toast';
 import apis from '../../utils/apis';
 import LoadingButton from '../ui/LoadingButton';
+import logoImag from '../../assets/logo2.jpg'
 
 const Login = () => {
     const navigate = useNavigate();
@@ -74,7 +74,11 @@ const Login = () => {
                 <div className="auth_container">
                     {/* Header */}
                     <div className="auth_header">
-                        <AiOutlineLogin />
+                        <img 
+                            src= {logoImag}
+                            alt="Login Icon" 
+                            className="auth_icon" 
+                        />
                         <p className="auth_heading">Welcome to Sanjukta</p>
                         <p className="auth_title">Login to continue</p>
                     </div>
