@@ -48,7 +48,6 @@ const App = () => {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/register" element={<Register />} />
       <Route path="/" element={<Login />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/forget/password" element={<ForgetPassword />} />

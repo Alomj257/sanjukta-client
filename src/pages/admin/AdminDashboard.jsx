@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MdDelete } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ClipLoader } from 'react-spinners';
 import DeleteModal from '../../components/model/DeleteModal';
@@ -14,9 +15,11 @@ const UserTable = () => {
     const [userToDelete, setUserToDelete] = useState(null);
     const toastShownRef = useRef(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchUsers = async () => {
-            setLoading(true); 
+            setLoading(true);
             try {
                 const response = await fetch(apis().getAllUsers);
                 if (!response.ok) throw new Error('Failed to fetch users');
@@ -108,6 +111,10 @@ const UserTable = () => {
             <h3 className="supplier-header-title">User List</h3>
             <div className='supplier-search'>
                 <input type="text" placeholder='Search user by name' onChange={handleSearch} />
+                <button className='supplierBtn' onClick={() => navigate('register')}>
+                    Add User
+                </button>
+
             </div>
 
             {loading ? (

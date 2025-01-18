@@ -95,7 +95,7 @@ const Login = () => {
                     </div>
 
                     <div className="auth_options">
-                        <Link to='/register'>Create new account?</Link>
+                        {/* <Link to='/register'>Create new account?</Link> */}
                         <Link to='/forget/password'>Forgot password?</Link>
                     </div>
                 </div>

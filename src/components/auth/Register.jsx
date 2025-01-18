@@ -3,7 +3,7 @@ import './auth.css';
 import Input from '../ui/Input';
 import { FaUserPlus } from "react-icons/fa";
 import Button from '../ui/Button';
-import BackToLogin from '../ui/BackToLogin';
+import BackToDashboard from '../ui/BackToDashboard';
 import { useNavigate } from 'react-router-dom';
 import apis from '../../utils/apis';
 import toast from 'react-hot-toast';
@@ -63,7 +63,7 @@ const Register = () => {
     }
 
     return (
-        <div className='auth_main'>
+        <div className='auth_main_register'>
             <form onSubmit={submitHandler}>
                 <div className="auth_container">
 
@@ -71,7 +71,7 @@ const Register = () => {
                     <div className="auth_header">
                         <FaUserPlus />
                         <p className="auth_heading">Welcome to Sanjukta</p>
-                        <p className="auth_title">Create a new account</p>
+                        <p className="auth_title">Create a new user</p>
                     </div>
 
                     {/* Input fields */}
@@ -102,7 +102,7 @@ const Register = () => {
                         <Button><LoadingButton loading={loading} title='Register' /></Button>
                     </div>
                     <div>
-                        <BackToLogin />
+                        <BackToDashboard />
                     </div>
                 </div>
             </form>
