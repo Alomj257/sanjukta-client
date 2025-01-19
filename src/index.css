@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Castoro+Titling&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Buenard:wght@400;700&display=swap');
 
 * {
   margin: 0;
@@ -8,8 +8,8 @@
 
 body {
   background-color: #f5f5f5 !important;
-  font-family: system-ui;
-  /* font-family: 'Castoro Titling', sans-serif; */
+  /* font-family: system-ui; */
+  font-family: 'Amiri', serif;
 }
 
 

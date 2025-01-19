@@ -4,7 +4,7 @@ import { FaUsers } from 'react-icons/fa';
 import { FaBars, FaPeopleGroup, FaPeopleCarryBox } from "react-icons/fa6";
 import { MdSpaceDashboard, MdInventory } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
-import transparentLogo from '../../assets/logo1.png';
+import transparentLogo from '../../assets/logo2.jpg';
 import './Sidebar.css';
 
 const Sidebar = ({ role }) => {
