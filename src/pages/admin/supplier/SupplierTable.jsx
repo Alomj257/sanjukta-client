@@ -45,7 +45,7 @@ const SupplierTable = () => {
             }
         } catch (error) {
             console.error("Error fetching suppliers:", error);
-            toast.error(error.message);
+            // toast.error(error.message);
         } finally {
             setLoading(false); // Set loading to false after the fetch
         }

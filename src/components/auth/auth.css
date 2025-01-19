@@ -58,9 +58,12 @@
 
 .auth_heading {
     font-size: 1.4rem;
-    font-weight: 600;
+    font-weight: 500;
 }
-
+.auth_heading_register {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
 .auth_title {
     font-size: 14px;
     color: gray;

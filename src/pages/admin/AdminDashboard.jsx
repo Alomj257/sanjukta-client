@@ -41,7 +41,7 @@ const UserTable = () => {
                 }
             } catch (error) {
                 console.error("Error fetching users:", error);
-                toast.error(error.message);
+                // toast.error(error.message);
             } finally {
                 setLoading(false);
             }

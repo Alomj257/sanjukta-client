@@ -54,7 +54,7 @@ const Register = () => {
 
             if (result?.status) {
                 toast.success(result?.message);
-                navigate('/');
+                navigate('/admin/dashboard');
             }
 
         } catch (error) {
@@ -70,8 +70,7 @@ const Register = () => {
                     {/* Header */}
                     <div className="auth_header">
                         <FaUserPlus />
-                        <p className="auth_heading">Welcome to Sanjukta</p>
-                        <p className="auth_title">Create a new user</p>
+                        <p className="auth_heading_register">Create a new user</p>
                     </div>
 
                     {/* Input fields */}

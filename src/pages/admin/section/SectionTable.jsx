@@ -57,7 +57,7 @@ const SectionTable = () => {
                 }
             } catch (error) {
                 console.error("Error fetching sections:", error);
-                toast.error(error.message);
+                // toast.error(error.message);
             } finally {
                 setLoading(false);
             }
