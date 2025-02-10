@@ -68,6 +68,8 @@ const apis = () => {
 
     // New Stock
     getAllNewStock: `${local}newStock/`,
+    deleteNewStock: (id) => `${local}newStock/${id}`,
+    updateNewStock: (id) => `${local}newStock/${id}`,
 
     // Return Stock
     addReturnStock: `${local}return-stock/`,

@@ -174,6 +174,8 @@ const AddSupplier = () => {
                                         <option value="">Select unit</option>
                                         <option value="kg">Kg</option>
                                         <option value="ltr">Ltr</option>
+                                        <option value="box">Box</option>
+                                        <option value="piece">Piece</option>
                                     </select>
                                 </div>
                                 <div className="col-md-2">

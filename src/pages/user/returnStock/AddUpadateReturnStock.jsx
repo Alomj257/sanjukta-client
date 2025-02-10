@@ -110,7 +110,7 @@ const AddUpdateReturnStock = () => {
       </button>
       <form onSubmit={handleSubmit}>
         <div className="row product_container">
-          <h4 style={{ paddingTop: "20px", marginBottom: '20px'}}>Select quantity for return from available quantity *</h4>
+          <h4 style={{ paddingTop: "20px", marginBottom: '20px' }}>Select quantity for return from available quantity *</h4>
 
           {formData.stocks.map((item, index) => (
             <div key={index} className="col-md-12 product_item">
@@ -158,6 +158,8 @@ const AddUpdateReturnStock = () => {
                     <option value="">Select unit</option>
                     <option value="kg">Kg</option>
                     <option value="ltr">Ltr</option>
+                    <option value="piece">Piece</option>
+                    <option value="box">Box</option>
                   </select>
                 </div>
                 {formData.stocks.length > 1 && (

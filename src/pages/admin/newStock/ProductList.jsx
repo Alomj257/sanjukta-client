@@ -3,7 +3,7 @@ import { ClipLoader } from 'react-spinners';
 import apis from '../../../utils/apis';
 import { FaBell } from 'react-icons/fa';
 import axios from 'axios';  // Add Axios for API calls
-import "./product.css";
+import './product.css';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -12,8 +12,10 @@ const ProductList = () => {
   const [error, setError] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
-  const [showPopup, setShowPopup] = useState(false);
-  const [showAllNotifications, setShowAllNotifications] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false); // Separate state for update popup
+  const [showNotificationPopup, setShowNotificationPopup] = useState(false); // Separate state for notification popup
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [newQuantity, setNewQuantity] = useState('');
 
   useEffect(() => {
     const fetchStocks = async () => {
@@ -62,8 +64,12 @@ const ProductList = () => {
     setFilteredStocks(filtered);
   };
 
-  const togglePopup = () => {
-    setShowPopup(!showPopup);
+  const toggleUpdatePopup = () => {
+    setShowUpdatePopup(!showUpdatePopup);
+  };
+
+  const toggleNotificationPopup = () => {
+    setShowNotificationPopup(!showNotificationPopup);
   };
 
   // Delete notification
@@ -81,7 +87,43 @@ const ProductList = () => {
   };
 
   const handleShowAllNotifications = () => {
-    setShowAllNotifications(!showAllNotifications);
+    setShowNotificationPopup(!showNotificationPopup);
+  };
+
+  // Handle update stock (quantity change)
+  const handleUpdateStock = async () => {
+    if (newQuantity && selectedProduct) {
+      try {
+        const updatedProduct = { ...selectedProduct, qty: newQuantity };
+        const response = await axios.put(apis().updateNewStock(selectedProduct._id), updatedProduct);
+        if (response.status === 200) {
+          setProducts(products.map((product) => product._id === selectedProduct._id ? updatedProduct : product));
+          setFilteredStocks(filteredStocks.map((product) => product._id === selectedProduct._id ? updatedProduct : product));
+          setShowUpdatePopup(false);  // Close the update popup
+        }
+      } catch (err) {
+        console.error('Error updating stock:', err.message);
+      }
+    }
+  };
+
+  const handleEditProduct = (product) => {
+    setSelectedProduct(product);
+    setNewQuantity(product.qty);  // Pre-fill quantity field
+    setShowUpdatePopup(true); // Open the update popup
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    try {
+      const response = await axios.delete(apis().deleteNewStock(productId));
+      if (response.status === 200) {
+        // Remove the deleted product from the state
+        setProducts(products.filter((product) => product._id !== productId));
+        setFilteredStocks(filteredStocks.filter((product) => product._id !== productId));
+      }
+    } catch (err) {
+      console.error('Error deleting product:', err.message);
+    }
   };
 
   if (loading) {
@@ -106,7 +148,7 @@ const ProductList = () => {
           className="form-control stock-search"
           onChange={handleSearch}
         />
-        <div className="notification-icon" onClick={togglePopup}>
+        <div className="notification-icon" onClick={toggleNotificationPopup}>
           <FaBell size={30} />
           {notificationCount > 0 && (
             <span className="notification-count">{notificationCount}</span>
@@ -131,17 +173,57 @@ const ProductList = () => {
                   <p className="card-text text-capitalize">
                     <strong>Total Product:</strong> {`${product?.qty} ${product?.unit}`}
                   </p>
+                  <button
+                    style={{marginRight: '10px'}}
+                    className="btn btn-warning btn-sm mr-2"
+                    onClick={() => handleEditProduct(product)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDeleteProduct(product._id)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
-      {showPopup && (
+
+      {/* Update Popup */}
+      {showUpdatePopup && (
+        <div className="notification-popup">
+          <div className="popup-header">
+            <h4>Edit Product Quantity</h4>
+            <button onClick={toggleUpdatePopup}>&times;</button>
+          </div>
+          <div className="popup-body">
+            <div className="form-group">
+              <label htmlFor="quantity">Quantity</label>
+              <input
+                type="number"
+                id="quantity"
+                className="form-control"
+                value={newQuantity}
+                onChange={(e) => setNewQuantity(e.target.value)}
+              />
+            </div>
+            <button className="btn btn-primary mt-2" onClick={handleUpdateStock}>
+              Update
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Notifications Popup */}
+      {showNotificationPopup && (
         <div className="notification-popup">
           <div className="popup-header">
             <h4>Notifications</h4>
-            <button onClick={togglePopup}>&times;</button>
+            <button onClick={toggleNotificationPopup}>&times;</button>
           </div>
           <div className="notification-table-wrapper" style={{ maxHeight: '300px', overflowY: 'auto' }}>
             <table className="table">
@@ -156,18 +238,16 @@ const ProductList = () => {
               </thead>
               <tbody>
                 {notifications
-                  .slice(0, showAllNotifications ? notifications.length : 4)
+                  .slice(0, showNotificationPopup ? notifications.length : 4)
                   .map((notification) => (
                     <tr key={notification._id}>
                       <td>
-                        {notification.sectionId?.sectionName || "No Section"}
+                        {notification.sectionId?.sectionName || 'No Section'}
                       </td>
-                      <td>{notification.productName || "No Product Name"}</td>
-                      <td>{`${notification.qty || 0} ${notification.unit || ""}`}</td>
+                      <td>{notification.productName || 'No Product Name'}</td>
+                      <td>{`${notification.qty || 0} ${notification.unit || ''}`}</td>
                       <td>
-                        {notification.date
-                          ? new Date(notification.date).toLocaleString()
-                          : "No Date"}
+                        {notification.date ? new Date(notification.date).toLocaleString() : 'No Date'}
                       </td>
                       <td>
                         <button
@@ -180,14 +260,13 @@ const ProductList = () => {
                     </tr>
                   ))}
               </tbody>
-
             </table>
             {notifications.length > 4 && (
               <button
                 className="btn btn-primary btn-sm"
                 onClick={handleShowAllNotifications}
               >
-                {showAllNotifications ? 'Show Less' : 'Read More'}
+                {showNotificationPopup ? 'Show Less' : 'Read More'}
               </button>
             )}
           </div>

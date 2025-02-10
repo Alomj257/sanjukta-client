@@ -229,6 +229,7 @@ const AddUpdateProduct = () => {
                 <option value="kg">Kg</option>
                 <option value="ltr">Ltr</option>
                 <option value="piece">Piece</option>
+                <option value="box">Box</option>
               </select>
             ) : (
               <Input

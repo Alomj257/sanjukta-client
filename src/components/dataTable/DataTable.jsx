@@ -7,7 +7,7 @@ const customStyles = {
       backgroundColor: '#dad8d8',
       color: 'black',
       fontSize: '17px',
-      fontWeight: '600',
+      fontWeight: '500',
       minHeight: '50px',
     }
 
