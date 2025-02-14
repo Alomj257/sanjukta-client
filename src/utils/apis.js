@@ -1,7 +1,7 @@
 const apis = () => {
   // const local = 'https://sanjukta-server-production.up.railway.app/'
-  // const local = 'http://localhost:5000/';
-  const local = 'https://sanjukta-server.onrender.com/';
+  const local = 'http://localhost:5000/';
+  // const local = 'https://sanjukta-server.onrender.com/';
 
   const list = {
     registerUser: `${local}user/register`,
