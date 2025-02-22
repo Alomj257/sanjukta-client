@@ -98,11 +98,9 @@ const SupplierDetails = () => {
                     <span>{supplierData.contactDetails}</span>
                 </div>
                 <div className="col-md-6 supplier_item viewBox">
-    <label>Purchase Date:</label>
-    <span>{new Date(supplierData.purchaseDate).toLocaleDateString('en-GB')}</span>
-</div>
-
-
+                    <label>Purchase Date:</label>
+                    <span>{new Date(supplierData.purchaseDate).toLocaleDateString('en-GB')}</span>
+                </div>
                 <h4 style={{ paddingTop: '20px' }}>Items Supplied</h4>
                 <div className="table_main">
                     <table className="item-table">
