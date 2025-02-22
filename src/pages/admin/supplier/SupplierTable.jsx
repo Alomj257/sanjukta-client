@@ -168,8 +168,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import DataTable from '../../../components/dataTable/DataTable';
 import './supplier-style.css';
 import { FaEye } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import apis from '../../../utils/apis';
 import toast from 'react-hot-toast';
@@ -187,18 +186,16 @@ const SupplierTable = () => {
 
     useEffect(() => {
         const fetchSuppliers = async () => {
-            setLoading(true); // Set loading to true before starting the fetch
+            setLoading(true);
             try {
                 const response = await fetch(apis().getAllSuppliers);
                 if (!response.ok) throw new Error('Failed to fetch suppliers');
 
                 const result = await response.json();
-                console.log("API Response: ", result);  // Log the entire response for debugging
+                console.log("API Response: ", result);
 
-                // Ensure the 'createdAt' field exists and is valid for sorting
-                if (result && result.suppliers && result.suppliers.length > 0) {
+                if (result?.suppliers?.length > 0) {
                     const sortedSuppliers = result.suppliers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
                     setData(sortedSuppliers);
                     setRecords(sortedSuppliers);
 
@@ -206,25 +203,29 @@ const SupplierTable = () => {
                         toastShownRef.current = true;
                     }
                 } else {
-                    console.error("No suppliers data found", result);  // Log if no data is found
+                    console.error("No suppliers data found", result);
                     throw new Error("No supplier data found");
                 }
             } catch (error) {
                 console.error("Error fetching suppliers:", error);
-                // toast.error(error.message);
             } finally {
-                setLoading(false); // Set loading to false after the fetch
+                setLoading(false);
             }
         };
 
         fetchSuppliers();
     }, []);
 
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB'); // Format: DD-MM-YYYY
+    };
+
     const columns = [
         {
-            name: 'Date',
-            selector: row => new Date(row.createdAt).toLocaleDateString('en-GB'), // 'en-GB' for dd/mm/yyyy format
-            sortable: true,
+            name: 'Purchase Date',
+            selector: row => formatDate(row.purchaseDate),
         },
         {
             name: 'Supplier Name',

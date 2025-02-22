@@ -15,8 +15,8 @@ const SupplierDetails = () => {
     useEffect(() => {
         const fetchSupplierDetails = async () => {
             try {
-                setLoading(true); // Ensure loading spinner shows for new requests
-                const apiUrl = apis().viewSupplier(id); // Generate API URL for the current ID
+                setLoading(true);
+                const apiUrl = apis().viewSupplier(id);
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error('Failed to fetch supplier details');
                 const result = await response.json();
@@ -34,7 +34,7 @@ const SupplierDetails = () => {
     const downloadPDF = async () => {
         const element = document.querySelector('.suppier_main');
         const button = element.querySelector('button');
-        if (button) button.style.display = 'none'; // Hide the button in the PDF
+        if (button) button.style.display = 'none';
 
         const canvas = await html2canvas(element);
         const imgData = canvas.toDataURL('image/png');
@@ -45,7 +45,7 @@ const SupplierDetails = () => {
 
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
-        if (button) button.style.display = ''; // Show the button back in the UI
+        if (button) button.style.display = '';
 
         const fileName = `${supplierData.supplierName.replace(/\s+/g, '_')}_Details.pdf`;
         pdf.save(fileName);
@@ -65,13 +65,15 @@ const SupplierDetails = () => {
 
     return (
         <div className="suppier_main">
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <h2 className="supplier_header">
-                <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/admin/supplier')}>Supplier</span> / View Details
-            </h2>
-            <button onClick={downloadPDF} style={{ marginBottom: '20px' }} className='download_pdf'>
-                Download as PDF
-            </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <h2 className="supplier_header">
+                    <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => navigate('/admin/supplier')}>
+                        Supplier
+                    </span> / View Details
+                </h2>
+                <button onClick={downloadPDF} style={{ marginBottom: '20px' }} className='download_pdf'>
+                    Download as PDF
+                </button>
             </div>
             <div className="row supplier_container">
                 <h4>Supplier Details</h4>
@@ -95,6 +97,11 @@ const SupplierDetails = () => {
                     <label>Contact Details:</label>
                     <span>{supplierData.contactDetails}</span>
                 </div>
+                <div className="col-md-6 supplier_item viewBox">
+    <label>Purchase Date:</label>
+    <span>{new Date(supplierData.purchaseDate).toLocaleDateString('en-GB')}</span>
+</div>
+
 
                 <h4 style={{ paddingTop: '20px' }}>Items Supplied</h4>
                 <div className="table_main">

@@ -246,21 +246,22 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
-import './supplier-style.css';
+import dayjs from 'dayjs';
+import { DatePicker } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../../components/ui/Input';
 import Button from '../../../components/ui/Button';
 import LoadingButton from '../../../components/ui/LoadingButton';
-import { useLocation, useNavigate } from 'react-router-dom';
-import apis from '../../../utils/apis';
 import toast from 'react-hot-toast';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
+import apis from '../../../utils/apis';
+import './supplier-style.css';
 
 const EditSupplier = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { supplierData } = location.state || {}; // Get supplier data passed from the previous page
+    const { supplierData } = location.state || {}; // Supplier data from previous page
 
     const [formData, setFormData] = useState({
         supplierName: '',
@@ -268,21 +269,15 @@ const EditSupplier = () => {
         email: '',
         gst: '',
         contactDetails: '',
-        items: [
-            {
-                itemName: '',
-                unit: '', // Now a free input field
-                itemQuantity: null,
-                pricePerItem: null,
-            },
-        ],
+        purchaseDate: null,  // New field added
+        items: [{ itemName: '', unit: '', itemQuantity: null, pricePerItem: null }],
     });
 
-    // Set form data if supplierData is available
     useEffect(() => {
         if (supplierData) {
             setFormData({
                 ...supplierData,
+                purchaseDate: supplierData.purchaseDate ? dayjs(supplierData.purchaseDate) : null,
                 items: supplierData.items || [{ itemName: '', unit: '', itemQuantity: null, pricePerItem: null }],
             });
         }
@@ -300,14 +295,16 @@ const EditSupplier = () => {
         }
     };
 
+    // Handle purchase date change
+    const handleDateChange = (date) => {
+        setFormData({ ...formData, purchaseDate: date });
+    };
+
     // Add a new item field
     const addNewItem = () => {
         setFormData({
             ...formData,
-            items: [
-                ...formData.items,
-                { itemName: '', unit: '', itemQuantity: null, pricePerItem: null },
-            ],
+            items: [...formData.items, { itemName: '', unit: '', itemQuantity: null, pricePerItem: null }],
         });
     };
 
@@ -325,10 +322,13 @@ const EditSupplier = () => {
             const response = await fetch(apis().updateSupplier(supplierData._id), {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    purchaseDate: formData.purchaseDate ? formData.purchaseDate.format('YYYY-MM-DD') : null,
+                }),
             });
-            const result = await response.json();
 
+            const result = await response.json();
             if (response.ok) {
                 toast.success('Supplier updated successfully!');
                 navigate('/admin/supplier');
@@ -350,62 +350,35 @@ const EditSupplier = () => {
             <form onSubmit={handleSubmit}>
                 <div className="row supplier_container">
                     <h4>Supplier Details</h4>
+
                     <div className="col-md-6 supplier_item">
                         <label>Supplier Name *</label>
-                        <Input
-                            type="text"
-                            name="supplierName"
-                            value={formData.supplierName}
-                            onChange={(e) => handleChange(e)}
-                            placeholder="Enter supplier name"
-                            required
-                        />
+                        <Input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} placeholder="Enter supplier name" required />
                     </div>
 
                     <div className="col-md-6 supplier_item">
                         <label>Supplier Address</label>
-                        <Input
-                            type="text"
-                            name="supplierAddress"
-                            value={formData.supplierAddress}
-                            onChange={(e) => handleChange(e)}
-                            placeholder="Enter supplier address"
-                        />
+                        <Input type="text" name="supplierAddress" value={formData.supplierAddress} onChange={handleChange} placeholder="Enter supplier address" />
                     </div>
 
                     <div className="col-md-6 supplier_item">
                         <label>Email</label>
-                        <Input
-                            type="text"
-                            name="email"
-                            value={formData.email}
-                            onChange={(e) => handleChange(e)}
-                            placeholder="Enter email"
-                            required
-                        />
+                        <Input type="text" name="email" value={formData.email} onChange={handleChange} placeholder="Enter email" required />
                     </div>
 
                     <div className="col-md-6 supplier_item">
                         <label>GST</label>
-                        <Input
-                            type="text"
-                            name="gst"
-                            value={formData.gst}
-                            onChange={(e) => handleChange(e)}
-                            placeholder="Enter GST number"
-                        />
+                        <Input type="text" name="gst" value={formData.gst} onChange={handleChange} placeholder="Enter GST number" />
                     </div>
 
                     <div className="col-md-6 supplier_item">
                         <label>Contact Details *</label>
-                        <Input
-                            type="text"
-                            name="contactDetails"
-                            value={formData.contactDetails}
-                            onChange={(e) => handleChange(e)}
-                            placeholder="Enter contact number"
-                            required
-                        />
+                        <Input type="text" name="contactDetails" value={formData.contactDetails} onChange={handleChange} placeholder="Enter contact number" required />
+                    </div>
+
+                    <div className="col-md-6 supplier_item">
+                        <label>Purchase Date *</label>
+                        <DatePicker value={formData.purchaseDate} onChange={handleDateChange} format="DD-MM-YYYY" style={{ width: '100%', height: '44px' }} required />
                     </div>
 
                     <h4 style={{ paddingTop: '20px' }}>Items Details</h4>
@@ -415,58 +388,26 @@ const EditSupplier = () => {
                             <div className="row">
                                 <div className="col-md-3">
                                     <label>Item Name *</label>
-                                    <Input
-                                        type="text"
-                                        name="itemName"
-                                        value={item.itemName}
-                                        onChange={(e) => handleChange(e, index, true)}
-                                        placeholder="Enter item name"
-                                        required
-                                    />
+                                    <Input type="text" name="itemName" value={item.itemName} onChange={(e) => handleChange(e, index, true)} placeholder="Enter item name" required />
                                 </div>
-                                <div className="col-md-3 supplier_item">
+                                <div className="col-md-3">
                                     <label>Unit *</label>
-                                    <Input
-                                        type="text"
-                                        name="unit"
-                                        value={item.unit}
-                                        onChange={(e) => handleChange(e, index, true)}
-                                        placeholder="Enter unit (e.g., kg, ltr)"
-                                        required
-                                    />
+                                    <Input type="text" name="unit" value={item.unit} onChange={(e) => handleChange(e, index, true)} placeholder="Enter unit (e.g., kg, ltr)" required />
                                 </div>
                                 <div className="col-md-2">
                                     <label>Quantity *</label>
-                                    <Input
-                                        type="number"
-                                        name="itemQuantity"
-                                        value={item.itemQuantity}
-                                        onChange={(e) => handleChange(e, index, true)}
-                                        placeholder="Enter quantity"
-                                        required
-                                    />
+                                    <Input type="number" name="itemQuantity" value={item.itemQuantity} onChange={(e) => handleChange(e, index, true)} placeholder="Enter quantity" required />
                                 </div>
                                 <div className="col-md-2">
                                     <label>Price per Item *</label>
-                                    <Input
-                                        type="number"
-                                        name="pricePerItem"
-                                        value={item.pricePerItem}
-                                        onChange={(e) => handleChange(e, index, true)}
-                                        placeholder="Enter price"
-                                        required
-                                    />
+                                    <Input type="number" name="pricePerItem" value={item.pricePerItem} onChange={(e) => handleChange(e, index, true)} placeholder="Enter price" required />
                                 </div>
                                 <div className="col-md-2 d-flex align-items-end gap-2">
                                     <button type="button" className="btn btn-primary itemBtn" onClick={addNewItem}>
                                         <FaPlus />
                                     </button>
                                     {formData.items.length > 1 && (
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger itemBtn"
-                                            onClick={() => removeItem(index)}
-                                        >
+                                        <button type="button" className="btn btn-danger itemBtn" onClick={() => removeItem(index)}>
                                             <FaTrashAlt />
                                         </button>
                                     )}

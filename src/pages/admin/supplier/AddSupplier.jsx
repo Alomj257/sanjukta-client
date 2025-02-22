@@ -242,6 +242,8 @@ import apis from '../../../utils/apis';
 import toast from 'react-hot-toast';
 import LoadingButton from '../../../components/ui/LoadingButton';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
+import { DatePicker } from 'antd';
+import dayjs from 'dayjs';
 
 const AddSupplier = () => {
     const [formData, setFormData] = useState({
@@ -250,6 +252,7 @@ const AddSupplier = () => {
         email: '---',
         gst: '---',
         contactDetails: '',
+        purchaseDate: null, // Added purchaseDate
         items: [
             {
                 itemName: '',
@@ -271,6 +274,10 @@ const AddSupplier = () => {
         } else {
             setFormData({ ...formData, [name]: value });
         }
+    };
+
+    const handleDateChange = (date, dateString) => {
+        setFormData({ ...formData, purchaseDate: dateString });
     };
 
     const addNewItem = () => {
@@ -376,6 +383,18 @@ const AddSupplier = () => {
                             value={formData.contactDetails}
                             onChange={(e) => handleChange(e)}
                             placeholder="Enter contact number"
+                            required
+                        />
+                    </div>
+
+                    <div className="col-md-6 supplier_item">
+                        <label>Purchase Date *</label>
+                        <DatePicker
+                            format="DD-MM-YYYY"
+                            value={formData.purchaseDate ? dayjs(formData.purchaseDate, "DD-MM-YYYY") : null}
+                            onChange={handleDateChange}
+                            className="ant-picker"
+                            style={{ height: '44px', fontSize: '16px' }}
                             required
                         />
                     </div>
