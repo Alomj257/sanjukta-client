@@ -22,6 +22,8 @@ const apis = () => {
     deleteSupplier: (id) => `${local}suppliers/delete-supplier/${id}`,
     viewSupplier: (id) => `${local}suppliers/view-supplier/${id}`,
     updateSupplier: (id) => `${local}suppliers/update-supplier/${id}`,
+    getSuppliersByDateRange: (fromDate, toDate) => `${local}suppliers/filter-by-date?fromDate=${fromDate}&toDate=${toDate}`,
+
 
     // Stock API
     getAllStock: `${local}stocks`,
