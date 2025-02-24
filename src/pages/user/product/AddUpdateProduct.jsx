@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./product.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { FaPlus, FaTrashAlt } from "react-icons/fa";
 import Input from "../../../components/ui/Input";
 import LoadingButton from "../../../components/ui/LoadingButton";
 import Button from "../../../components/ui/Button";
@@ -164,9 +163,8 @@ const AddUpdateProduct = () => {
         <div className="row product_container">
           <h4>Product Details</h4>
           <div
-            className={`col-md-${
-              formData.productName === "other" ? "2" : "6"
-            }`}
+            className={`col-md-${formData.productName === "other" ? "2" : "6"
+              }`}
           >
             <label>Select Product</label>
             <select
@@ -176,7 +174,7 @@ const AddUpdateProduct = () => {
               required
               className="custom-select"
             >
-              <option value="">Select Product Name</option>
+              <option value="" disabled>Select Product Name</option>
               {newStockList &&
                 newStockList?.map((val, index) => (
                   <option
@@ -217,30 +215,17 @@ const AddUpdateProduct = () => {
           </div>
           <div className="col-md-3 product_item">
             <label>Unit *</label>
-            {formData.productName === "other" ? (
-              <select
-                name="unit"
-                value={formData.unit}
-                onChange={(e) => handleChange(e)}
-                required
-                className="custom-select"
-              >
-                <option value="">Select unit</option>
-                <option value="kg">Kg</option>
-                <option value="ltr">Ltr</option>
-                <option value="piece">Piece</option>
-                <option value="box">Box</option>
-              </select>
-            ) : (
-              <Input
-                type="text"
-                name="unit"
-                value={formData.unit}
-                disabled
-                placeholder="Unit will be auto-filled"
-              />
-            )}
+            <Input
+              type="text"
+              name="unit"
+              value={formData.unit}
+              onChange={(e) => handleChange(e)}
+              required
+              className="custom-input"
+              placeholder="Enter unit"
+            />
           </div>
+
           {formData?.productName === "other" && (
             <div className="col-md-6 product_item">
               <label>Product Rate per unit *</label>
