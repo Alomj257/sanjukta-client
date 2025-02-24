@@ -77,10 +77,12 @@ const apis = () => {
     addReturnStock: `${local}return-stock/`,
 
     //Report
-    getDailyStockReport: (sectionId, date) =>
-      `${local}section/stock/daily-report/${sectionId}/${date}`,
-    getMonthlyStockReport: (sectionId, date) =>
-      `${local}section/stock/monthly-report/${sectionId}/${date}`,
+    // getDailyStockReport: (sectionId, date) =>
+    //   `${local}section/stock/daily-report/${sectionId}/${date}`,
+    // getMonthlyStockReport: (sectionId, date) =>
+    //   `${local}section/stock/monthly-report/${sectionId}/${date}`,
+    getStockReportByDateRange: (sectionId, fromDate, toDate) =>
+      `${local}section/stock/stock-report/${sectionId}/${fromDate}/${toDate}`,
     //Notification
     getNotifications: `${local}notification`
   };

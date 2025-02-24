@@ -156,12 +156,7 @@ const SupplierTable = () => {
             doc.setDrawColor(0);
             doc.line(10, y, 200, y);
     
-            y += 10;
-    
-            // Items Heading
-            doc.setFont("helvetica", "bold");
-            doc.text("Items:", 10, y);
-            y += 7;
+            y += 5;
     
             // Table Headers (with Borders)
             let startX = 10;
@@ -215,10 +210,6 @@ const SupplierTable = () => {
         doc.save(`Supplier_Report_${new Date().toISOString().split('T')[0]}.pdf`);
     };
     
-    
-    
-
-
     const columns = [
         { name: 'Purchase Date', selector: row => formatDate(row.purchaseDate) },
         { name: 'Supplier Name', selector: row => row.supplierName },
