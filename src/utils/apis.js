@@ -1,6 +1,7 @@
 const apis = () => {
   // const local = 'http://localhost:5000/';
-  const local = 'https://sanjukta-server.onrender.com/';
+  // const local = 'https://sanjukta-server.onrender.com/';
+  const local = 'http://69.62.74.116:5000/';
 
   const list = {
     registerUser: `${local}user/register`,
